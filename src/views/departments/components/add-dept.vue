@@ -120,13 +120,6 @@ export default {
   },
   methods: {
     close() {
-      // 重置数据，因为 resetFileds 只会清除表单上的数据，不能清除编辑时给formData添加的id等数据
-      this.formData = {
-        name: '', // 部门名称
-        code: '', // 部门编码
-        manager: '', // 部门管理者
-        introduce: '' // 部门介绍
-      }
       // 传统方式修改父组件中传递的props值需要自定义一个事件传到父组件
       // 然后在父组件中监听传递的事件名称，然后执行修改值
       // <add-dept :show-dialog="showDialog" @close="showDialog = $event" />
@@ -136,6 +129,13 @@ export default {
       this.$emit('update:showDialog', false)
       // 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
       this.$refs.formData.resetFields()
+      // 重置数据，因为 resetFileds 只会清除表单上的数据，不能清除编辑时给formData添加的id等数据
+      this.formData = {
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '' // 部门介绍
+      }
     },
     confirm() {
       this.$refs.formData.validate(async isOk => {

@@ -103,14 +103,18 @@ export default {
     // 删除部门
     async delDept(id) {
       // 因为全局注册了 element-ui 可以直接调用 $confirm 提示框
-      await this.$confirm('是否确认删除该部门?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      })
-      await delDepartments(id)
-      this.$message.success('删除成功')
-      // 删除成功后重新获取数据
-      this.getDepartments()
+      try {
+        await this.$confirm('是否确认删除该部门?', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        })
+        await delDepartments(id)
+        this.$message.success('删除成功')
+        // 删除成功后重新获取数据
+        this.getDepartments()
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }
