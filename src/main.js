@@ -13,6 +13,7 @@ import '@/styles/index.scss' // global css
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import component from '@/components'
 // 导入所有自定义指令的对象，并设置别名来接收
 import * as directives from '@/directives'
 
@@ -21,6 +22,8 @@ Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
 
+// 注册自定义定义的全局组件
+Vue.use(component)
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
