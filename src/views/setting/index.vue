@@ -66,7 +66,7 @@
 
     </div>
     <!-- 添加部门弹出层 -->
-    <el-dialog :title="title" :visible="showDialog" @close="btnCancel">
+    <el-dialog :title="title" :visible="showDialog" @close="close">
       <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="120px">
         <el-form-item prop="name" label="角色名称">
           <el-input v-model="roleForm.name" />
@@ -78,7 +78,7 @@
       <!-- 放置footer插槽 -->
       <el-row type="flex" justify="center">
         <el-col :span="8">
-          <el-button size="small" @click="btnCancel">取消</el-button>
+          <el-button size="small" @click="close">取消</el-button>
           <el-button type="primary" size="small" @click="btnOK">确定</el-button>
         </el-col>
       </el-row>
@@ -97,7 +97,7 @@ export default {
       page: {
         // 放置页码及相关数据
         page: 1,
-        pagesize: 3,
+        pagesize: 5,
         total: 0 // 记录总数
       },
       formData: {},
@@ -159,7 +159,7 @@ export default {
         // 刷新页面
         this.getRoleList()
         // 关闭弹出层
-        this.showDialog = false
+        this.close()
       } catch (err) {
         console.log(err)
       }
@@ -174,6 +174,10 @@ export default {
         await deleteRole(id)
         // 删除成功后重新获取数据
         this.$message.success('删除角色成功')
+        // 重新获取新数据
+        if (this.page.page === Math.ceil(this.page.total / this.page.pagesize)) {
+          this.page.page = Math.ceil((this.page.total - 1) / this.page.pagesize)
+        }
         this.getRoleList()
       } catch (err) {
         console.log(err)
@@ -186,7 +190,7 @@ export default {
       // 显示弹出层
       this.showDialog = true
     },
-    btnCancel() {
+    close() {
       this.roleForm = {
         name: '',
         description: ''

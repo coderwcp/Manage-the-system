@@ -6,16 +6,22 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
-import '@/styles/index.scss' // global css
+import '@/styles/index.scss' // 全局样式
 
 import '@/icons' // icon
 import '@/permission' // permission control
-
+// 导入自定义定义的全局组件
 import component from '@/components'
 // 导入所有自定义指令的对象，并设置别名来接收
 import * as directives from '@/directives'
+
+import * as filters from '@/filters'
+// 遍历所有的导出的过滤器对象 完成自定义全局注册
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 // 遍历所有的导出的指令对象 完成自定义全局注册
 Object.keys(directives).forEach(key => {
