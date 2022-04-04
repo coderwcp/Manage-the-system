@@ -7,6 +7,8 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
+// 导入打印功能的插件
+import Print from 'vue-print-nb'
 
 import '@/styles/index.scss' // 全局样式
 
@@ -28,6 +30,7 @@ Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
 
+Vue.use(Print)
 // 注册自定义定义的全局组件
 Vue.use(component)
 // set ElementUI lang to EN

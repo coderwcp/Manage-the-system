@@ -22,7 +22,7 @@
                 <!-- 作用域插槽 -->
                 <template slot-scope="{ row }">
                   <!-- row 每一行对应的数据对象 -->
-                  <el-button size="small" type="success">分配权限</el-button>
+                  <el-button size="small" type="success" @click="assignPrem(row.id)">分配权限</el-button>
                   <el-button size="small" type="primary" @click="editRole(row.id)">编辑</el-button>
                   <el-button size="small" type="danger" @click="deleteRole(row.id)">删除</el-button>
                 </template>
@@ -65,7 +65,7 @@
       </el-card>
 
     </div>
-    <!-- 添加部门弹出层 -->
+    <!-- 添加角色弹出层 -->
     <el-dialog :title="title" :visible="showDialog" @close="close">
       <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="120px">
         <el-form-item prop="name" label="角色名称">
@@ -83,12 +83,43 @@
         </el-col>
       </el-row>
     </el-dialog>
+
+    <!-- 分配权限弹出层 -->
+    <el-dialog
+      title="权限分配"
+      :visible.sync="showPremDialog"
+      @close="closePre"
+    >
+      <!-- 权限是一颗树 -->
+      <!-- 将数据绑定到组件上 -->
+      <!-- check-strictly 如果为true 那表示父子勾选时  不互相关联 如果为false就互相关联 -->
+      <!-- id作为唯一标识 -->
+      <el-tree
+        ref="permTree"
+        :data="permData"
+        :props="defaultProps"
+        :show-checkbox="true"
+        :check-strictly="true"
+        :default-expand-all="true"
+        :default-checked-keys="selectCheck"
+        node-key="id"
+      />
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button @click="closePre">取 消</el-button>
+          <el-button type="primary" @click="confirm">确 定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getRoleList, getCompanyInfo, deleteRole, addRole, getRoleDetail, updateRole } from '@/api/setting'
+import { getRoleList, getCompanyInfo, deleteRole, addRole, getRoleDetail, updateRole, assignPrem } from '@/api/setting'
 import { mapGetters } from 'vuex'
+import { getPermissionList } from '@/api/permission'
+import { tranListToTreeData } from '@/utils'
 export default {
   name: 'Setting',
   data() {
@@ -101,14 +132,22 @@ export default {
         total: 0 // 记录总数
       },
       formData: {},
-      showDialog: false,
+      showDialog: false, // 显示添加角色弹出层
       roleForm: {
         name: '',
         description: ''
       },
       rules: {
         name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }]
-      }
+      },
+      showPremDialog: false, // 显示分配权限弹出层
+      permData: [], // 用来接收权限数据 树形数据
+      defaultProps: {
+        label: 'name',
+        children: 'children'
+      },
+      selectCheck: [], // 定义一个数组来接收 已经选中的节点
+      roleId: null // 用来记录分配角色的id
     }
   },
   computed: {
@@ -199,6 +238,35 @@ export default {
       this.$refs.roleForm.resetFields()
       // 关闭弹出层
       this.showDialog = false
+    },
+    // 分配权限
+    async assignPrem(id) {
+      // console.log(id)
+      // 获取权限列表
+      // 获取权限列表转为树形结构数据
+      this.permData = tranListToTreeData(await getPermissionList(), '0')
+      // 保存需要操作的角色id
+      this.roleId = id
+      // 根据 id 获取角色的权限数据
+      const { permIds } = await getRoleDetail(id)
+      // console.log('permIds', permIds)
+      // 将角色已有的权限列表给树形的默认选中列表
+      this.selectCheck = permIds
+      // 先获取数据再打开弹出层
+      this.showPremDialog = true
+    },
+    // 关闭分配权限弹出层
+    closePre() {
+      this.selectCheck = [] // 清空选中的列表
+      this.showPremDialog = false
+    },
+    async confirm() {
+      // 调用 el-tree 的方法 获取选中的列表
+      // console.log(this.$refs.permTree.getCheckedKeys())
+      await assignPrem({ id: this.roleId, permIds: this.$refs.permTree.getCheckedKeys() })
+      this.$message.success('权限分配成功')
+      // 关闭弹出层
+      this.closePre()
     }
   }
 }

@@ -1,7 +1,8 @@
 /**
  * Created by PanJiaChen on 16/11/18.
  */
-
+import { formatDate } from '@/filters'
+import EmployeesEnum from '@/api/constant/employees'
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -128,3 +129,29 @@ export function tranListToTreeData(list, rootValue = '') {
   })
   return array
 }
+
+// 将数组中的对象转为特定属性对应的数组
+export function formatJson(headers, arr) {
+  // 遍历每一条数据
+  // 将里面返回的数组在放入一个数组中，成为一个二维数组
+  return arr.map(item => {
+    // Object.values(headers) 拿到对应头部对象所有属性对应的值 数组
+    // console.log(Object.values(headers))
+    return Object.values(headers).map(key => {
+      // 将头部数组中的每一个属性组成一个新的数组
+      // ['13800000002', '管理员', '2018-11-02', 1, '2018-11-30', '9002', '总裁办']
+      // 时间转换
+      // console.log(key)
+      if (key === 'correctionTime' || key === 'timeOfEntry') {
+        return formatDate(item[key])
+      } else if (key === 'formOfEmployment') {
+        const res = EmployeesEnum.hireType.find(obj => obj.id === item[key])
+        return res ? res.value : '未知'
+      }
+      // 聘用形式转换
+      return item[key]
+    })
+    // return res
+  })
+}
+

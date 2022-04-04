@@ -47,3 +47,12 @@ export function updateRole(data) {
     data
   })
 }
+
+// 分配权限
+export function assignPrem(data) {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data
+  })
+}
