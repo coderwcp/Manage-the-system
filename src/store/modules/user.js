@@ -6,6 +6,8 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import { setTimesTemp } from '@/utils/auth'
 // 导入请求api
 import { login, getUserInfo, getUserDetailById } from '@/api/user'
+// 引入重置路由方法
+import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken() || null, // 当 vuex 一初始化的时候从本地获取 token
@@ -62,15 +64,24 @@ const actions = {
 
     // 保存用户信息到 vuex
     context.commit('setUserInfo', { ...res, ...baseInfo })
-    // ？
+    // 返回数据，使用权限标识
     return res
   },
 
   // 退出
   logout(context) {
-    // 删除 token
+    // 删除 token 及用户信息
     context.commit('removeToken')
     context.commit('removeUserInfo')
+    // 重置路由
+    resetRouter()
+    console.log(router.options)
+    // 重置vuex中的route模块
+    // 加了命名空间只能调用当前模块中的 mutations，无法调用另一个子模块中的 mutations 方法
+    // 此时需要添加第三个参数，加了第三个参数表示
+    // 当前的 context 不是子模块而是父模块
+    // 调用根模块中的 mutations，然后从根模块调用子模块的 mutations 方法
+    context.commit('permission/setRoutes', [], { root: true })
   }
 }
 

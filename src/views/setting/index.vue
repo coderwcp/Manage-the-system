@@ -249,9 +249,10 @@ export default {
       this.roleId = id
       // 根据 id 获取角色的权限数据
       const { permIds } = await getRoleDetail(id)
-      // console.log('permIds', permIds)
+      console.log('permIds', permIds)
       // 将角色已有的权限列表给树形的默认选中列表
-      this.selectCheck = permIds
+      // 如果返回的是对象格式则，取id，或者是字符串，就直接返回
+      this.selectCheck = permIds.map(t => t instanceof Object ? t.id : t)
       // 先获取数据再打开弹出层
       this.showPremDialog = true
     },

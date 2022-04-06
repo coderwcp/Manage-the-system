@@ -4,6 +4,8 @@ import store from './store'
 import router from './router'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
+import checkPermission from './mixin/checkPermission'
+
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
@@ -29,6 +31,19 @@ Object.keys(filters).forEach(key => {
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
+
+// 全局挂载检查按钮权限方法
+// 方法一：挂载原型对象里
+// Vue.prototype.checkPermission = function(key) {
+//   try {
+//     return this.$store.state.user.userInfo.roles.points.includes(key)
+//   } catch (err) {
+//     console.log(err)
+//     return false
+//   }
+// }
+// 方式二：全局混入
+Vue.mixin(checkPermission)
 
 Vue.use(Print)
 // 注册自定义定义的全局组件

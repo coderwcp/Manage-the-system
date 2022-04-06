@@ -8,6 +8,7 @@
         <!-- is-root 是否根节点 -->
         <tree-tools :tree-node="company">
           <el-dropdown-item
+            :disabled="!checkPermission('add-dept')"
             @click.native="addDept(company)"
           >添加子部门</el-dropdown-item>
         </tree-tools>
@@ -22,6 +23,7 @@
           <tree-tools slot-scope="{ data }" :tree-node="data">
             <!-- 使用冒泡来 监听原生点击事件 -->
             <el-dropdown-item
+              :disabled="!checkPermission('add-dept')"
               @click.native="addDept(data)"
             >添加子部门</el-dropdown-item>
             <el-dropdown-item
@@ -116,6 +118,14 @@ export default {
         console.log(err)
       }
     }
+    // checkPermission(key) {
+    //   try {
+    //     return this.$store.state.user.userInfo.roles.points.includes(key)
+    //   } catch (err) {
+    //     console.log(err)
+    //     return false
+    //   }
+    // }
   }
 }
 </script>

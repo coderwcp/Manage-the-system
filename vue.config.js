@@ -45,7 +45,8 @@ module.exports = {
       // '/api': {
       [process.env.VUE_APP_BASE_API]: {
         // target: 'http://ihrm-java.itheima.net/', // 要代理的地址
-        target: 'http://192.168.16.39:3000/', // 要代理的地址
+        // target: 'http://192.168.16.39:3000/', // 要代理的地址
+        target: 'http://localhost:3000/', // 要代理的地址
         changeOrigin: true // 是否跨域 需要设置此值为true 才可以让本地服务代理我们发出请求
         // 路径重写 当前项目不需要路径重写
         // pathRewrite: {
