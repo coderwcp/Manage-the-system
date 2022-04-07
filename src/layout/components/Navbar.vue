@@ -13,6 +13,9 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu">
+      <lang class="right-menu-item" />
+      <screen-full class="right-menu-item" />
+      <theme-picker class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imgerror="require('@/assets/common/head.jpg')" :src="staffPhoto" class="user-avatar">
@@ -39,11 +42,17 @@
 import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import ScreenFull from '@/components/ScreenFull'
+import ThemePicker from '@/components/ThemePicker'
+import Lang from '@/lang/index.vue'
 
 export default {
   components: {
     // Breadcrumb,
-    Hamburger
+    Hamburger,
+    ScreenFull,
+    ThemePicker,
+    Lang
   },
   data() {
     return {
@@ -138,12 +147,11 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
-      height: 100%;
+      // padding: 0 8px;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
-
+      vertical-align: middle;
+      margin: 0 20px 0 0;
       &.hover-effect {
         cursor: pointer;
         transition: background 0.3s;
